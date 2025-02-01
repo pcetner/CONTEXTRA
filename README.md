@@ -1,9 +1,15 @@
 C – Context
+
 O – Oriented
+
 N – Neural
+
 T – Token
+
 EX – EXclusion
+
 TR – TRimming
+
 A – Adaptation
 
 - **`llm_integration/deepseek.py`**: Handles calling **deepseek-r1:70b** via `ollama`.
