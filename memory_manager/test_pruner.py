@@ -1,6 +1,12 @@
 import unittest
-from tokens import ConversationToken, ConversationState
-from pruner import prune_if_needed
+import os
+import sys
+
+# Add the project root directory to Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from memory_manager.tokens import ConversationToken, ConversationState
+from memory_manager.pruner import prune_if_needed
 
 class TestPruner(unittest.TestCase):
 

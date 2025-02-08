@@ -19,3 +19,4 @@ def prune_if_needed(state: ConversationState, max_token_count: int):
             # If the random draw doesn't remove it, forcibly remove it anyway
             # to ensure we eventually free enough space.
             state.tokens.pop(0)
+

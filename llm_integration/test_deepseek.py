@@ -1,7 +1,13 @@
 # test_deepseek.py
 
 import unittest
-from deepseek import generate_with_deepseek
+import os
+import sys
+
+# Add the project root directory to Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from llm_integration.deepseek import generate_with_deepseek
 
 class TestDeepseekIntegration(unittest.TestCase):
 
@@ -10,7 +16,7 @@ class TestDeepseekIntegration(unittest.TestCase):
         Tests if generate_with_deepseek successfully calls the model via ollama
         and returns a non-empty string.
         """
-        test_prompt = "Hello, deepseek. How are you?"
+        test_prompt = "Hello, deepseek. How are you? Respond in 20 words or less."
         
         # Call the function
         response = generate_with_deepseek(prompt=test_prompt)

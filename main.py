@@ -1,5 +1,8 @@
 import random
+import os
 import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 
 # Local imports
 from memory_manager.tokens import ConversationToken, ConversationState
@@ -7,6 +10,15 @@ from memory_manager.scorer import update_probabilities
 from memory_manager.pruner import prune_if_needed
 from memory_manager.prompt_builder import build_prompt
 from llm_integration.deepseek import generate_with_deepseek
+import threading
+import time
+
+def thinking_animation(stop_event):
+    """Display a thinking animation with dots"""
+    print("\nThinking", end="", flush=True)
+    while not stop_event.is_set():
+        print(".", end="", flush=True)
+        time.sleep(1)
 
 def main():
     # Seed random for reproducibility (optional)
@@ -47,11 +59,30 @@ def main():
         # 5) Build prompt
         final_prompt = build_prompt(state, user_input)
 
-        # 6) Generate with deepseek-r1:8b (via ollama)
-        response = generate_with_deepseek(final_prompt)
+        # 6) Generate with deepseek-r1:8b (via ollama) with streaming
+        # Start thinking animation in a separate thread
+        stop_thinking = threading.Event()
+        thinking_thread = threading.Thread(target=thinking_animation, args=(stop_thinking,))
+        thinking_thread.daemon = True
+        thinking_thread.start()
 
-        # 7) Print response
-        print(f"AI: {response.strip()}")
+        # Generate response
+        response_received = False
+        response = []
+        for token in generate_with_deepseek(final_prompt, stream=True):
+            if not response_received:
+                # Clear the thinking animation line
+                stop_thinking.set()  # Signal the animation to stop
+                thinking_thread.join()  # Wait for the thread to finish
+                print("\r" + " " * 50 + "\r", end="", flush=True)
+                print("AI: ", end="", flush=True)
+                response_received = True
+            print(token, end="", flush=True)
+            response.append(token)
+        
+        if not response_received:
+            print("\rNo response received from the model.")
+        print()  # New line after response is complete
 
         # 8) Optional: parse the response to detect references, adjust frequencies, etc.
         # Skipping that for now.

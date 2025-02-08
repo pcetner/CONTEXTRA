@@ -1,6 +1,12 @@
 import unittest
-from tokens import ConversationToken, ConversationState
-from scorer import update_probabilities
+import os
+import sys
+
+# Add the project root directory to Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from memory_manager.tokens import ConversationToken, ConversationState
+from memory_manager.scorer import update_probabilities
 
 class TestScorer(unittest.TestCase):
 
