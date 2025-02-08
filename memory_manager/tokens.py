@@ -1,5 +1,6 @@
-from dataclasses import dataclass, field
-from typing import List
+from dataclasses import dataclass
+from typing import List, Optional
+import numpy as np
 
 @dataclass
 class ConversationToken:
@@ -7,15 +8,14 @@ class ConversationToken:
     Represents either a single token or a chunk of text in the conversation.
     """
     text: str
-    p_unimportant: float = 0.5
-    frequency: int = 0
+    frequency: int = 1
     last_used_turn: int = 0
-    user_marked_important: bool = False
+    user_importance: float = 0.0
+    p_unimportant: float = 0.5
+    embedding: Optional[np.ndarray] = None
 
-@dataclass
 class ConversationState:
-    """
-    Holds the list of tokens and a turn counter to track conversation turns.
-    """
-    tokens: List[ConversationToken] = field(default_factory=list)
-    turn_count: int = 0
+    def __init__(self):
+        self.tokens: List[ConversationToken] = []
+        self.turn_count: int = 0
+        self.important_chunks: List[str] = []  # Store user-marked important text chunks
